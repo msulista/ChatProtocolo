@@ -88,12 +88,13 @@ public class ChatClient extends JFrame{
 			String texto;
 			while((texto = leitor.nextLine())!=null)
 			{
-				textoRecebido.append(texto+"\n");
+                            String  mensagem = entregaMensagemDestinatario(texto);
+                            textoRecebido.append(mensagem + "\n");
 			}
 		}
 		
 	}
-	
+	        
 	private class EnviaMensagem implements ActionListener{
             
 		@Override
@@ -116,13 +117,34 @@ public class ChatClient extends JFrame{
             String today = formatter.format(date);
             return today;
         }
-        
                   
+        private String vericaDestinatario(String mensagem) {
+            
+            String destinatario = "@All";
+            try {
+                Scanner scanner = new Scanner(mensagem);
+                scanner.useDelimiter("([^<>])"); 
+                while (scanner.hasNext()) {
+                    destinatario = scanner.next();                    
+                }
+                scanner.close(); 
+                return destinatario;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }       
                
-               
-               
-
-                       
+        private String entregaMensagemDestinatario(String mensagem) {
+            
+            String retorno = "";
+            String nome = this.vericaDestinatario(mensagem);
+            
+            if(nome.equalsIgnoreCase(nomeUsuario) || nome.equalsIgnoreCase("All")) {
+                retorno = mensagem;
+            }
+            return retorno;
+        }                   
 
 }
 
